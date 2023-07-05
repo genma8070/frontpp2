@@ -6,8 +6,6 @@ export default {
   emits: ['fChange'],
   data() {
     return {
-
-
     };
   },
   methods: {
@@ -24,7 +22,7 @@ export default {
 
 <template>
   <tr>
-    <td><input type="checkbox"/></td> <!-- 複選框列 -->
+    <td><input type="radio" /></td> <!-- 複選框列 -->
     <td>{{ session.questionSessionId }}</td>
     <td>{{ session.questionText }}</td>
     <td v-if="session.questionType">多選</td>

@@ -6,6 +6,7 @@ import AddCView from "../views/AddC.vue";
 import AddBView from "../views/AddB.vue";
 import AddAView from "../views/AddA.vue";
 import EditView from "../views/Edit.vue";
+import EditBView from "../views/EditB.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,12 @@ const router = createRouter({
       component: AddBView,
     },
     {
+      // 契約首頁
+      path: '/add/b',
+      name: 'bb',
+      component: AddBView,
+    },
+    {
       // 契約詳細頁面(包含歷史契約)
       path: '/add/c',
       name: 'c',
@@ -48,9 +55,9 @@ const router = createRouter({
     },
     {
       // 貸主詳細頁面(含修改)
-      path: '/kashinushi/info',
-      name: 'kashinushiInfo',
-      // component:
+      path: '/editB/:Id',
+      name: 'editB',
+      component: EditBView,
     },
     {
       // 借主首頁

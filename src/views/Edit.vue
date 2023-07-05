@@ -73,6 +73,9 @@ export default {
                 .catch(function (error) {
                     console.log(error)
                 })
+        },
+        goB(){
+            this.$router.push({ name: 'editB', params: { Id: this.$route.params.Id } });
         }
 
     },
@@ -106,6 +109,9 @@ export default {
             </div>
             <div class="mt-5">
                 <button @click="update" type="button">編輯</button>
+            </div>
+            <div class="mt-5 ms-3">
+                <button @click="goB" type="button">編輯題目</button>
             </div>
         </div>
 

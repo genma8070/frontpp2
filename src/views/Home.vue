@@ -138,9 +138,7 @@ export default {
 
         },
         add() {
-
             this.$router.push("/add/a");
-
         }
 
     },

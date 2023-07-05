@@ -1,11 +1,11 @@
 <script>
 import HeaderView from '../components/Header.vue';
-import SessionView from '../components/Session.vue';
+import SessionEditView from '../components/SessionEdit.vue';
 
 export default {
     components: {
         HeaderView,
-        SessionView
+        SessionEditView
 
     },
 
@@ -23,18 +23,12 @@ export default {
         }
     },
     methods: {
-        session() {
-            let listData = JSON.parse(sessionStorage.getItem("a"));
+        findqo() {
             let body = {
-                "list": listData,
-                "questionnaireId": this.$route.params.b_Id,
-                "questionText": this.title,
-                "isRequired": this.must,
-                "questionType": this.choice,
-                "options": this.option
+                "questionnaireId": this.$route.params.Id,
             }
 
-            fetch("http://localhost:8080/new_session", {
+            fetch("http://localhost:8080/find_q_o", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -45,48 +39,22 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-                    sessionStorage.setItem("a", JSON.stringify(data))
                     this.items = data
+                    console.log(this.items)
                 })
                 .catch(function (error) {
                     console.log(error)
                 })
         },
-        db() {
-            let listData = JSON.parse(sessionStorage.getItem("a"));
-            let body = {
+        con() {
+            console.log(this.$route.params.Id)
 
-                "list": listData,
-                "questionnaireId": this.$route.params.b_Id,
-                "questionText": this.title,
-                "isRequired": this.must,
-                "questionType": this.choice,
-                "options": this.option
-            }
-
-            fetch("http://localhost:8080/go_db", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body)
-            })
-                .then(function (response) {
-                    return response.json();
-                })
-                .then((data) => {
-                    this.$router.push("/")
-                    sessionStorage.removeItem("a")
-                })
-                .catch(function (error) {
-                    console.log(error)
-                })
         }
-
     },
     mounted() {
         this.vh = document.documentElement.scrollHeight - 72 - 85;
         document.getElementById("wrap").style.height = this.vh.toString() + "px";
+        this.findqo();
 
     }
 }
@@ -113,7 +81,7 @@ export default {
                 </div>
             </div>
             <div class="mt-4">
-                <button @click="session" type="button">加入</button>
+                <button @click="session" type="button">編輯</button>
             </div>
         </div>
         <div class="mt-2">
@@ -133,7 +101,7 @@ export default {
                 </thead>
 
                 <tbody>
-                    <SessionView v-for="session in items"  v-bind:key="session" v-bind:session="session" />
+                    <SessionEditView v-for="session in items" v-bind:key="session" v-bind:session="session" />
                 </tbody>
 
             </table>
