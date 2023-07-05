@@ -18,15 +18,27 @@ export default {
             title: "",
             choice: false,
             must: false,
-            option: ""
+            option: "",
+            listData: ""
 
         }
     },
     methods: {
         session() {
-            let listData = JSON.parse(sessionStorage.getItem("a"));
+            
+            try {
+                this.listData = JSON.parse(sessionStorage.getItem("a"));
+                // 其他代码...
+                // 执行解析成功后的操作
+            } catch (error) {
+                // JSON 解析异常处理
+                console.log("JSON 解析错误:", error);
+                // 继续执行其他逻辑或提供默认值
+                this.listData = null; // 或其他默认值
+                // 其他代码...
+            }
             let body = {
-                "list": listData,
+                "list": this.listData,
                 "questionnaireId": this.$route.params.b_Id,
                 "questionText": this.title,
                 "isRequired": this.must,
@@ -47,6 +59,7 @@ export default {
                 .then((data) => {
                     sessionStorage.setItem("a", JSON.stringify(data))
                     this.items = data
+                    console.log(this.items)
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -77,6 +90,7 @@ export default {
                 .then((data) => {
                     this.$router.push("/")
                     sessionStorage.removeItem("a")
+                    data.questionSessionId = 1;
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -133,7 +147,7 @@ export default {
                 </thead>
 
                 <tbody>
-                    <SessionView v-for="session in items"  v-bind:key="session" v-bind:session="session" />
+                    <SessionView v-for="session in items" v-bind:key="session" v-bind:session="session" />
                 </tbody>
 
             </table>

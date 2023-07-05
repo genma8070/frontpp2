@@ -12,7 +12,7 @@ export default {
     data() {
         return {
             vh: 0,
-            items: [
+            items2: [
 
             ],
             title: "",
@@ -39,17 +39,21 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-                    this.items = data
-                    console.log(this.items)
+                    this.items2 = data
+                    console.log(this.items2)
                 })
                 .catch(function (error) {
                     console.log(error)
                 })
         },
-        con() {
-            console.log(this.$route.params.Id)
-
-        }
+        enter(value) {
+            this.$emit('e-change', value);
+            this.title = value.questionText
+            this.choice = value.questionType
+            this.must = value.isRequired
+            this.option = value.options
+        },
+        
     },
     mounted() {
         this.vh = document.documentElement.scrollHeight - 72 - 85;
@@ -92,7 +96,7 @@ export default {
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
-                        <th>確認</th>
+                        <th>選擇</th>
                         <th>編號</th>
                         <th>問題</th>
                         <th>種類</th>
@@ -101,7 +105,7 @@ export default {
                 </thead>
 
                 <tbody>
-                    <SessionEditView v-for="session in items" v-bind:key="session" v-bind:session="session" />
+                    <SessionEditView v-for="edit in items2.list" @e-change="enter" v-bind:key="edit" v-bind:edit="edit" />
                 </tbody>
 
             </table>

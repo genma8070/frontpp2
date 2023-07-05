@@ -1,33 +1,34 @@
 <script>
 export default {
   props: [
-    "session"
+    "edit"
   ],
-  emits: ['fChange'],
+  emits: ['e-change'],
   data() {
     return {
     };
   },
   methods: {
-    getEditUrl(questionnaireId) {
-      return '/edit/' + questionnaireId;
-    },
-    sendData(value) {
-      this.$emit('f-change', value);
-    }
 
-  }
+    sendData(value) {
+      this.$emit('e-change', value);
+    },
+    
+  },
+  mounted() {
+   
+    }
 };
 </script>
 
 <template>
   <tr>
-    <td><input type="radio" /></td> <!-- 複選框列 -->
-    <td>{{ session.questionSessionId }}</td>
-    <td>{{ session.questionText }}</td>
-    <td v-if="session.questionType">多選</td>
+    <td><input type="radio" name="gg" v-on:change="sendData(edit)" :value="edit.questionId" /></td> <!-- 複選框列 -->
+    <td>{{ edit.questionSessionId }}</td>
+    <td>{{ edit.questionText }}</td>
+    <td v-if="edit.questionType">多選</td>
     <td v-else>單選</td>
-    <td v-if="session.isRequired">必填</td>
+    <td v-if="edit.isRequired">必填</td>
     <td v-else>非必填</td>
   </tr>
 </template>
