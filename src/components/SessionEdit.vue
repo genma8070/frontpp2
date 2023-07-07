@@ -1,17 +1,20 @@
 <script>
 export default {
   props: [
-    "edit"
+    "edit",
+    "cc"
   ],
   emits: ['e-change'],
   data() {
     return {
+      
     };
   },
   methods: {
 
     sendData(value) {
       this.$emit('e-change', value);
+      console.log(this.edit)
     },
     
   },
@@ -23,7 +26,8 @@ export default {
 
 <template>
   <tr>
-    <td><input type="radio" name="gg" v-on:change="sendData(edit)" :value="edit.questionId" /></td> <!-- 複選框列 -->
+    <td v-if="!cc"><input type="radio" name="gg" v-on:change="sendData(edit)" :value="edit.questionId" /></td> <!-- 複選框列 -->
+    <td v-else><input type="checkbox" name="gg" v-on:change="sendData(edit)"  :value="edit.questionId" /></td>
     <td>{{ edit.questionSessionId }}</td>
     <td>{{ edit.questionText }}</td>
     <td v-if="edit.questionType">多選</td>

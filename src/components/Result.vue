@@ -1,7 +1,8 @@
 <script>
 export default {
   props: [
-    "property"
+    "property",
+    "index"
   ],
   emits: ['fChange'],
   data() {
@@ -26,8 +27,8 @@ export default {
   <a href=""></a>
   <tr>
     <td v-if="property.status"></td>
-    <td v-else><input type="checkbox" @change="sendData(property)" :value="property.questionnaireId" /></td> <!-- 複選框列 -->
-    <td>{{ property.questionnaireId }}</td>
+    <td v-else><input type="checkbox" @change="sendData(property,index)" :value="property.questionnaireId" /></td> <!-- 複選框列 -->
+    <td>{{ index+1 }}</td>
     <td v-if="property.status">{{ property.title }}</td>
     <td v-else><a :href="getEditUrl(property.questionnaireId)" class="aa">{{ property.title }}</a></td> <!-- 複選框列 -->
     <td v-if="property.status">開放中</td>

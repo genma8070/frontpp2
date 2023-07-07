@@ -1,9 +1,10 @@
 <script>
 export default {
   props: [
-    "session"
+    "session",
+    "index"
   ],
-  emits: ['fChange'],
+  emits: ['f-change'],
   data() {
     return {
 
@@ -14,8 +15,9 @@ export default {
     getEditUrl(questionnaireId) {
       return '/edit/' + questionnaireId;
     },
-    sendData(value) {
-      this.$emit('f-change', value);
+    sendData(value, value2) {
+      this.$emit('f-change', value, value2);
+    
     }
 
   }
@@ -24,8 +26,8 @@ export default {
 
 <template>
   <tr>
-    <td><input type="checkbox"/></td> <!-- 複選框列 -->
-    <td>{{ session.questionSessionId }}</td>
+    <td><input type="checkbox" v-on:change="sendData(session, index)"/></td> <!-- 複選框列 -->
+    <td>{{ index + 1 }}</td>
     <td>{{ session.questionText }}</td>
     <td v-if="session.questionType">多選</td>
     <td v-else>單選</td>

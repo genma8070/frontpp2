@@ -1,29 +1,45 @@
 <script>
 import HeaderView from '../components/Header.vue';
 import SessionEditView from '../components/SessionEdit.vue';
+import SessionView from '../components/Session.vue';
 
 export default {
     components: {
         HeaderView,
-        SessionEditView
+        SessionEditView,
+        SessionView
 
     },
 
     data() {
         return {
             vh: 0,
+            items:
+            JSON.parse(sessionStorage.getItem("a"))
+                
+            ,
             items2: [
 
             ],
             title: "",
             choice: false,
             must: false,
-            option: ""
+            option: "",
+            more: false,
+            optionId: "",
+            questionId: "",
+            listData: JSON.parse(sessionStorage.getItem("a")),
+            questionSessionId: "",
+            sessions: [],
+            id: [],
+            qId:[]
 
         }
     },
     methods: {
+       
         findqo() {
+         
             let body = {
                 "questionnaireId": this.$route.params.Id,
             }
@@ -52,15 +68,204 @@ export default {
             this.choice = value.questionType
             this.must = value.isRequired
             this.option = value.options
+            this.optionId = value.optionsId
+            this.questionId = value.questionId
+            const index = this.qId.findIndex(i => i === value.questionId);
+            if (index !== -1) {
+                this.qId.splice(index, 1); // 从数组中删除找到的元素
+            } else {
+                this.qId.push(value.questionId)
+            }
+            console.log(this.title)
         },
-        
-    },
-    mounted() {
-        this.vh = document.documentElement.scrollHeight - 72 - 85;
-        document.getElementById("wrap").style.height = this.vh.toString() + "px";
-        this.findqo();
+        enterSession(value, value2) {
+            console.log(value2)
+            this.$emit('f-change', value, value2);
+            this.title = value.questionText
+            this.choice = value.questionType
+            this.must = value.isRequired
+            this.option = value.options
+            this.optionId = value.optionsId
+            this.questionId = value.questionId
+            this.questionSessionId = value.questionSessionId
+            this.sessions = value
+            const index = this.id.findIndex(i => i === value2);
+            if (index !== -1) {
+                this.id.splice(index, 1); // 从数组中删除找到的元素
+            } else {
+                this.id.push(value2)
+            }
+            console.log(this.id)
+        },
+        clear() {
+            this.title = ""
+            this.choice = false
+            this.must = false
+            this.option = ""
+        },
+        update() {
+            let body = {
+                "questionType": this.choice,
+                "questionText": this.title,
+                "isRequired": this.must,
+                "questionId": this.questionId,
+                "options": this.option,
+                "optionsId": this.optionId,
 
-    }
+            }
+
+            fetch("http://localhost:8080/update_qo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then((data) => {
+                    this.findqo();
+                    const responseMessage = data.message; // 假設回應的資料中包含名為 message 的屬性
+                    window.alert(responseMessage);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+
+        },
+        session() {
+
+            try {
+                this.listData = JSON.parse(sessionStorage.getItem("a"));
+
+            } catch (error) {
+                console.log("JSON 解析错误:", error);
+                this.listData = null;
+            }
+            let body = {
+                "list": this.listData,
+                "questionnaireId": this.$route.params.Id,
+                "questionText": this.title,
+                "isRequired": this.must,
+                "questionType": this.choice,
+                "options": this.option,
+                "questionSessionId": this.questionSessionId
+            }
+
+            fetch("http://localhost:8080/new_session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then((data) => {
+                    sessionStorage.setItem("a", JSON.stringify(data))
+                    this.items = data
+                    console.log(this.items)
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        },
+        db() {
+            let listData = JSON.parse(sessionStorage.getItem("a"));
+            let body = {
+
+                "list": listData,
+                "questionnaireId": this.$route.params.Id,
+                "questionText": this.title,
+                "isRequired": this.must,
+                "questionType": this.choice,
+                "options": this.option
+            }
+
+            fetch("http://localhost:8080/go_db", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then((data) => {
+                    this.$router.push("/")
+                    sessionStorage.removeItem("a")
+                    data.questionSessionId = 1;
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        },
+        deleteQ() {
+            let body = {
+                "questionId":  this.questionId
+            }
+            fetch("http://localhost:8080/delete_qo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then((data) => {
+                    this.findqo();
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        },
+        deleteSession() {
+            try {
+                this.listData = JSON.parse(sessionStorage.getItem("a"));
+
+            } catch (error) {
+                console.log("JSON 解析错误:", error);
+                this.listData = null;
+            }
+            let body = {
+                "list": this.listData,
+                "sessions":  this.id,
+            }
+            fetch("http://localhost:8080/delete_session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then((data) => {
+                    sessionStorage.setItem("a", JSON.stringify(data))
+                    this.items = data
+                    this.id = [];
+                    console.log(this.items)
+                    this.findqo();
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+    
+
+},
+mounted() {
+    this.vh = document.documentElement.scrollHeight - 72 - 85;
+    document.getElementById("wrap").style.height = this.vh.toString() + "px";
+    this.findqo();
+
+}
 }
 </script>
 <template>
@@ -85,12 +290,15 @@ export default {
                 </div>
             </div>
             <div class="mt-4">
-                <button @click="session" type="button">編輯</button>
+                <button v-if="!more" @click="update" type="button">編輯</button>
+                <button v-else @click="session" type="button">加入</button>
+                <input v-model="more" v-on:change="clear" class="ms-2" type="checkbox" name="" id="">追加題目
             </div>
         </div>
         <div class="mt-2">
-            <button @click="deleteEnquete" class="ms-5" type="button">清除問題</button>
-            <button @click="db" class="ms-5" type="button">儲存問題</button>
+            <button v-if="!more" @click="deleteQ" class="ms-5" type="button">刪除問題</button>
+            <button v-else @click="deleteSession" class="ms-5" type="button">刪除問題</button>
+            <button v-if="more" @click="db" class="ms-5" type="button">儲存問題</button>
         </div>
         <div class="Result mt-1">
             <table class="table table-dark table-striped">
@@ -105,7 +313,8 @@ export default {
                 </thead>
 
                 <tbody>
-                    <SessionEditView v-for="edit in items2.list" @e-change="enter" v-bind:key="edit" v-bind:edit="edit" />
+                    <SessionEditView v-if="!more" v-for="edit in items2.list" @e-change="enter" v-bind:key="edit" v-bind:edit="edit" v-bind:cc="more" />
+                    <SessionView v-else v-for="(session, index) in items" @f-change="enterSession" v-bind:key="session" v-bind:session="session" v-bind:index="index" />
                 </tbody>
 
             </table>

@@ -54,6 +54,7 @@ export default {
                 })
                 .then((data) => {
                     this.id = []
+                    this.find();
 
                 })
                 .catch(function (error) {
@@ -189,8 +190,8 @@ export default {
 
                 <tbody>
                     <!-- 使用子元件並傳遞相關資料 -->
-                    <Result v-for="property in items.list" @f-change="getId" v-bind:key="property"
-                        v-bind:property="property" />
+                    <Result v-for="(property, index) in items.list" @f-change="getId" v-bind:key="property"
+                        v-bind:property="property" v-bind:index="index" />
                 </tbody>
 
             </table>
