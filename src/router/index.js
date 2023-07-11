@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import HomeView from "../views/Home.vue";
+import F_HomeView from "../views/F_Home.vue";
+import F_AnsView from "../views/F_Answer.vue";
+import F_AnsView_C from "../views/F_Answer_C.vue";
 import AddDView from "../views/AddD.vue";
 import AddCView from "../views/AddC.vue";
 import AddBView from "../views/AddB.vue";
@@ -61,16 +64,32 @@ const router = createRouter({
     },
     {
       // 借主首頁
-      path: '/karinushi',
-      name: 'karinushi',
-      // component: FackView,
-      children: [
-        {
-          // 借主詳細頁面(含修改)
-          path: 'info',
-          // component:
-        }
-      ]
+      path: '/f_home',
+      name: 'f_home',
+      component: F_HomeView,
+      // children: [
+      //   {
+      //     // 借主詳細頁面(含修改)
+      //     path: 'info',
+      //     // component:
+      //   }
+      // ]
+    },
+    {
+      // 貸主首頁
+      path: '/ans/:Id',
+      name: 'ans',
+      component: F_AnsView,
+    }, {
+      // 貸主首頁
+      path: '/ans/:Id/check',
+      name: 'check',
+      component: F_AnsView_C,
+    }, {
+      // 貸主首頁
+      path: '/add/d',
+      name: 'd',
+      component: AddDView,
     },
     {
       // 借主詳細頁面(含修改)
