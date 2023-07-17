@@ -1,11 +1,10 @@
 <script>
-import Question from '../components/Question.vue';
+import Question from '../components/Question_C.vue';
 
 
 export default {
     components: {
-        Question,
-
+        Question
 
     },
 
@@ -19,42 +18,16 @@ export default {
             email: "",
             title: "",
             description: "",
-            st: '',
-            et: '',
-            deBug: false,
-            db:[]
+            db: []
         }
     },
     methods: {
-        //         checkNumeric() {
-        //       if (!/^\d+$/.test(this.age)) {
-        //         alert("請輸入數字");
-        //         this.age = '';
-        //       }
-        //     }
-        //   
-        checkPhone() {
-            if (!this.deBug) {
-                this.deBug = true;
-                const pattern = /^09\d{8}$/;
-                const phoneNum = this.phone.toString()
 
-                if (!pattern.test(phoneNum)) {
-                    this.phone = "";
-                    alert("請輸入正確的手機號碼格式，例如：09xxxxxxxx");
-
-                }
-                sessionStorage.setItem('phone', this.phone);
-
-            }
-            this.deBug = false
-        },
         ageLimit() {
             if (this.age < 0 || this.age > 100) {
                 alert("請填入有效年齡0~100");
                 this.age = "";
             }
-            sessionStorage.setItem('age', this.age)
         },
         validateChineseInput() {
             const pattern = /^[\u4e00-\u9fa5]*$/;
@@ -62,22 +35,15 @@ export default {
                 alert("請輸入中文。");
                 this.name = "";
             }
-            sessionStorage.setItem('name', this.name)
         },
         validateEmailInput() {
-            if (!this.deBug) {
-                this.deBug = true;
-                const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!pattern.test(this.email)) {
-                    alert("信箱格式錯誤。");
-                    this.email = "";
-
-                }
-                sessionStorage.setItem('email', this.email)
-
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!pattern.test(this.email)) {
+                alert("信箱格式錯誤。");
+                this.email = "";
             }
-            this.deBug = false
         },
+
         getOP() {
             let body = {
                 "questionnaireId": this.$route.params.Id,
@@ -121,10 +87,8 @@ export default {
                 })
                 .then((data) => {
                     this.title = data.list[0].title
-                    this.description = data.list[0].description
-                    this.st = data.list[0].startTime
-                    this.et = data.list[0].endTime
 
+                    this.description = data.list[0].description
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -147,29 +111,25 @@ export default {
                 this.email = sessionStorage.getItem("email")
             }
         },
-        goCheck() {
-            if (this.age === "" || this.email === "" || this.name === "" || this.phone === "") {
-                window.alert("個人資料不得有空")
-            } else {
-                this.$router.push({ name: 'check', params: { Id: this.$route.params.Id } });
-            }
+        goBack() {
+            this.$router.push({ name: 'ans', params: { Id: this.$route.params.id } });
         },
-        goHome() {
-            sessionStorage.clear()
-            this.$router.push({ name: 'f_home' });
-        },
-        goDb(){
-            for(let i=0;i<this.items.length;i++){
-                sessionStorage.getItem(i).forEach(element => {
-                    if(element === []){
-                        element === "無";
+        goDb() {
+            this.db = [];
+            for (let i = 0; i < this.items.list.length; i++) {
+                let item = JSON.parse(sessionStorage.getItem(i)); // 解析获取到的字符串为对象或数组
+                if (Array.isArray(item)) {
+                    if (item.length === 0) {
+                        item = ["無"]; // 如果数组为空，将其设为 ["無"]
                     }
-                   const e = element.join(',')
-                   this.db.add(e)
-                });
-                this.db = this.db.join(';')
+                    const e = item.join(","); // 将数组元素拼接为字符串
+                    this.db.push(e);
+                } else {
+                    // 如果不是数组，可以根据实际需求进行其他逻辑处理
+                }
             }
-            console.log(this.db)
+            this.db = this.db.join(";");
+            console.log(this.db);
         }
 
     },
@@ -188,31 +148,27 @@ export default {
         <div class="d-flex mt-1 mx-5 border border-dark border-2 justify-content-center">
             <div class="row d-flex flex-column mx-3 my-2">
                 <div class="d-flex flex-column justify-content-center align-items-center">
-                    <p class="h6 text-end">開放期間:{{ st }}~{{ et }}</p>
                     <h1>{{ title }}</h1>
-                    <h5>{{ description }}</h5>
                 </div>
                 <div class="col d-flex">
                     <h4>姓名:</h4>
                     <input placeholder="請輸入中文姓名" v-model="name" style="height: 25px; width: 338px;" class="ms-2" type="text"
-                        @input="validateChineseInput">
+                        @input="validateChineseInput" disabled>
                 </div>
                 <div class="col d-flex">
                     <h4>電話:</h4>
-                    <input placeholder="請輸入10碼電話" v-model="phone" style="height: 25px; width: 338px;" class="ms-2"
-                        type="text" @blur="checkPhone">
+                    <input placeholder="請輸入碼電話" v-model="phone" style="height: 25px; width: 338px;" class="ms-2"
+                        type="number" disabled>
                 </div>
                 <div class="col d-flex">
                     <h4>EMail:</h4>
-                    <input v-if="phone===''" placeholder="請先輸入電話" v-model="email" style="height: 25px; width: 325px;" class="ms-2"
+                    <input placeholder="請輸入email" v-model="email" style="height: 25px; width: 325px;" class="ms-2"
                         type="email" @blur="validateEmailInput" disabled>
-                        <input v-else placeholder="請輸入email" v-model="email" style="height: 25px; width: 325px;" class="ms-2"
-                        type="email" @blur="validateEmailInput">
                 </div>
                 <div class="col d-flex">
                     <h4>年齡:</h4>
                     <input placeholder="請輸入年齡" v-model="age" style="height: 25px; width: 338px;" class="ms-2" type="number"
-                        @input="ageLimit">
+                        @blur="ageLimit" disabled>
                 </div>
 
                 <ol class="list-group list-group-numbered ">
@@ -221,8 +177,8 @@ export default {
                 </ol>
                 <div class="mt-2 d-flex justify-content-between">
                     <p></p>
-                    <input type="button" @click="goHome" value="取消">
-                    <input type="button" @click="goCheck" value="送出">
+                    <input type="button" @click="goBack" value="取消">
+                    <input type="button" @click="goDb" value="送出">
                 </div>
 
             </div>

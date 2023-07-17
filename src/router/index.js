@@ -4,6 +4,8 @@ import HomeView from "../views/Home.vue";
 import F_HomeView from "../views/F_Home.vue";
 import F_AnsView from "../views/F_Answer.vue";
 import F_AnsView_C from "../views/F_Answer_C.vue";
+import F_AnsView_G from "../views/F_Answer_G.vue";
+import F_AnsView_F from "../views/F_Answer_F.vue";
 import AddDView from "../views/AddD.vue";
 import AddCView from "../views/AddC.vue";
 import AddBView from "../views/AddB.vue";
@@ -87,15 +89,15 @@ const router = createRouter({
       component: F_AnsView_C,
     }, {
       // 貸主首頁
-      path: '/add/d',
-      name: 'd',
-      component: AddDView,
+      path: '/feedBack/:Id',
+      name: 'feedBack',
+      component: F_AnsView_F,
     },
     {
       // 借主詳細頁面(含修改)
-      path: '/karinushi/info',
-      name: 'karinushiInfo',
-      // component:
+      path: '/graph/:Id',
+      name: 'graph',
+      component:F_AnsView_G
     }
   ]
 })

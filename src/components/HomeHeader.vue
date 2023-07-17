@@ -13,13 +13,17 @@ export default {
         },
         logout() {
             this.$router.push("/");
+        },
+        gF() {
+            this.$router.push("/f_home");
         }
     }
 }
 </script>
 <template>
     <header class="murasaki pt-2 d-flex justify-content-between align-items-end px-5">
-        <h1 style="padding-bottom: 0.5rem;">問卷系統なのだ</h1>
+        <a class="h1" style="padding-bottom: 0.5rem; text-decoration: none;" @click="gF">問卷系統なのだ</a>
+        
 
         <button class="btn btn-outline-light mb-3" @click="logout">回到搜尋なのだ</button>
     </header>

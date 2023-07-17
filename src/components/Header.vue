@@ -1,10 +1,12 @@
 <script>
 import { RouterLink } from 'vue-router';
+
 export default {
     data() {
         return {
             location: 0,
-            isLogPage: false
+            isLogPage: false,
+            currentPath: '' // 新增 currentPath 屬性
         }
     },
     methods: {
@@ -14,26 +16,43 @@ export default {
         logout() {
             this.$router.push("/");
         }
+    },
+    mounted() {
+        // 獲取當前網址名稱並保存在 currentPath 屬性中
+        this.currentPath = window.location.pathname;
     }
 }
 </script>
+
 <template>
     <header class="murasaki px-4 pt-4 d-flex justify-content-between align-items-end px-5">
-        <!-- <RouterLink to="/home" class="mb-4">
-            <img src="" alt="LOGO">
-        </RouterLink> -->
-        
-        <!-- Nav Bar -->
-        <nav class="d-flex">
-            <RouterLink to="/add/a" @click="switchLocation(1)" class="navBtn" :class="{target: location === 1}">問券</RouterLink>    
-            <RouterLink to="/add/b" @click="switchLocation(2)" class="navBtn" :class="{target: location === 2}">題目</RouterLink>    
-            <RouterLink to="/add/c" @click="switchLocation(3)" class="navBtn" :class="{target: location === 3}">填寫資料</RouterLink>    
-            <RouterLink to="/add/d" @click="switchLocation(4)" class="navBtn" :class="{target: location === 4}">統計</RouterLink>    
+        <nav  v-if="$route.name === 'a'" class="d-flex">
+            <h4 class="bg-white mx-4">問券</h4>    
+            <h4 class="mx-4">問題</h4>    
+            <h4 class="mx-4">問券回饋</h4>    
+            <h4 class="mx-4">統計</h4>    
         </nav>
-
-        <!-- <button class="btn btn-outline-light mb-4" @click="logout">回到首頁なのだ</button> -->
+        <nav v-else-if="$route.name === 'b'" class="d-flex">
+            <h4 class="mx-4">問券</h4>    
+            <h4 class="bg-white mx-4 px-4">問題</h4>    
+            <h4 class="mx-4">問券回饋</h4>    
+            <h4 class="mx-4">統計</h4>    
+        </nav>
+        <nav v-else-if="$route.name === 'c'" class="d-flex">
+            <h4 class="mx-4">問券</h4>    
+            <h4 class="mx-4">問題</h4>    
+            <h4 class="bg-white mx-4">問券回饋</h4>    
+            <h4 class="mx-4">統計</h4>    
+        </nav>
+        <nav v-else-if="$route.name === 'd'" class="d-flex">
+            <h4 class="mx-4">問券</h4>    
+            <h4 class="mx-4">問題</h4>    
+            <h4 class="mx-4">問券回饋</h4>    
+            <h4 class="bg-white mx-4">統計</h4>    
+        </nav>
     </header>
 </template>
+
 <style lang="scss" scoped>
     .navBtn {
         color: white;

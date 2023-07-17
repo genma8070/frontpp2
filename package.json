@@ -16,12 +16,17 @@
     "bootstrap-datepicker": "^1.10.0",
     "bootstrap-vue": "^2.23.1",
     "bootstrap5": "^1.1.9",
+    "chart.js": "^4.3.0",
     "datepicker": "^0.0.0",
+    "v-charts": "^1.17.10",
     "vue": "^3.3.4",
+    "vue-chartjs": "^5.2.0",
+    "vue-chartkick": "^1.1.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
+    "@types/vue-chartkick": "^0.5.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-prettier": "^7.1.0",
     "eslint": "^8.34.0",

@@ -17,7 +17,8 @@ export default {
             phone: "",
             email: "",
             title: "",
-            description: ""
+            description: "",
+            db: []
         }
     },
     methods: {
@@ -61,7 +62,8 @@ export default {
                 .then((data) => {
                     this.items = data
                     this.getEnq();
-                
+                    console.log(this.items)
+
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -85,7 +87,7 @@ export default {
                 })
                 .then((data) => {
                     this.title = data.list[0].title
-                   
+
                     this.description = data.list[0].description
                 })
                 .catch(function (error) {
@@ -109,8 +111,51 @@ export default {
                 this.email = sessionStorage.getItem("email")
             }
         },
-        goBack(){
+        goBack() {
             this.$router.push({ name: 'ans', params: { Id: this.$route.params.id } });
+        },
+        goDb() {
+            this.db = [];
+            for (let i = 0; i < this.items.list.length; i++) {
+                let item = JSON.parse(sessionStorage.getItem(i)); // 解析获取到的字符串为对象或数组
+                if (Array.isArray(item)) {
+                    if (item.length === 0) {
+                        item = ["無"]; // 如果数组为空，将其设为 ["無"]
+                    }
+                    const e = item.join(","); // 将数组元素拼接为字符串
+                    this.db.push(e);
+                } else {
+                    // 如果不是数组，可以根据实际需求进行其他逻辑处理
+                }
+            }
+            this.db = this.db.join(";");
+            console.log(this.db);
+
+            let body = {
+                "questionnaireId": this.$route.params.Id,
+                "selectedOptions": this.db,
+                "answerName": this.name,
+                "answerPhone": this.phone.toString(),
+                "answerEmail": this.email,
+                "answerAge": this.age,
+            }
+            fetch("http://localhost:8080/new_answer", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(body)
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then((data) => {
+                    window.alert(data.message);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+
         }
 
     },
@@ -129,7 +174,7 @@ export default {
         <div class="d-flex mt-1 mx-5 border border-dark border-2 justify-content-center">
             <div class="row d-flex flex-column mx-3 my-2">
                 <div class="d-flex flex-column justify-content-center align-items-center">
-                    <h1>{{ title }}</h1>                    
+                    <h1>{{ title }}</h1>
                 </div>
                 <div class="col d-flex">
                     <h4>姓名:</h4>
@@ -154,12 +199,12 @@ export default {
 
                 <ol class="list-group list-group-numbered ">
                     <Question class="overflow-auto" v-for="(qList, index) in items.list" v-bind:key="qList"
-                        v-bind:qList="qList" v-bind:index="index"  />
+                        v-bind:qList="qList" v-bind:index="index" />
                 </ol>
                 <div class="mt-2 d-flex justify-content-between">
                     <p></p>
                     <input type="button" @click="goBack" value="取消">
-                    <input type="button" value="送出">
+                    <input type="button" @click="goDb" value="送出">
                 </div>
 
             </div>

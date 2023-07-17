@@ -17,6 +17,9 @@ export default {
     },
     sendData(value) {
       this.$emit('f-change', value);
+    },
+    see(){
+      this.$router.push({ name: 'graph', params: { Id: this.property.questionnaireId } });
     }
 
   }
@@ -36,7 +39,7 @@ export default {
     <td>{{ property.startTime }}</td>
     <td>{{ property.endTime }}</td>
     <td>
-      <!-- <button v-if="showStatisticsButton" @click="viewStatistics">View Statistics</button> -->
+      <button @click="see">觀看統計</button>
     </td>
   </tr>
 </template>
