@@ -19,9 +19,13 @@ export default {
       this.$emit('f-change', value);
     },
     see(){
-      this.$router.push({ name: 'd', params: { Id: this.property.questionnaireId } });
-    }
+      this.$router.push({ name: 'c_detail', params: { Id: this.property.questionnaireId , PId: this.property.answerId } });
+    },
+    
 
+  },
+  mounted(){
+   console.log(this.property)
   }
 };
 </script>
@@ -29,17 +33,11 @@ export default {
 <template>
   <a href=""></a>
   <tr>
-    <td v-if="property.status"></td>
-    <td v-else><input type="checkbox" @change="sendData(property,index)" :value="property.questionnaireId" /></td> <!-- 複選框列 -->
-    <td>{{ index+1 }}</td>
-    <td v-if="property.status">{{ property.title }}</td>
-    <td v-else><a :href="getEditUrl(property.questionnaireId)" class="aa">{{ property.title }}</a></td> <!-- 複選框列 -->
-    <td v-if="property.status">開放中</td>
-    <td v-else>未開放</td>
-    <td>{{ property.startTime }}</td>
-    <td>{{ property.endTime }}</td>
+   <td>{{ index+1 }}</td>
+    <td>{{ property.answerName }}</td>
+    <td>{{ property.answerTime }}</td>
     <td>
-      <button @click="see">觀看統計</button>
+      <button @click="see">前往</button>
     </td>
   </tr>
 </template>

@@ -114,6 +114,12 @@ export default {
                 })
         },
         search() {
+            if (this.startTime > this.endTime && this.startTime != null && this.endTime != null) {
+                window.alert("開始日期不得超過截止日期")
+                this.startTime = null;
+                this.endTime = null;
+                return;
+            }
             let body = {
                 "title": this.title,
                 "startTime": this.startTime,
@@ -128,9 +134,14 @@ export default {
                 body: JSON.stringify(body)
             })
                 .then(function (response) {
+                    // window.alert(response.message)
                     return response.json();
                 })
                 .then((data) => {
+                    if(data.message){
+                        window.alert(data.message)
+                        this.find()
+                    }
                     this.items = data
                 })
                 .catch(function (error) {

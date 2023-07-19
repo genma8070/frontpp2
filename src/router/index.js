@@ -8,6 +8,7 @@ import F_AnsView_G from "../views/F_Answer_G.vue";
 import F_AnsView_F from "../views/F_Answer_F.vue";
 import AddDView from "../views/AddD.vue";
 import AddCView from "../views/AddC.vue";
+import AddCDetailView from "../views/AddCDetail.vue";
 import AddBView from "../views/AddB.vue";
 import AddAView from "../views/AddA.vue";
 import EditView from "../views/Edit.vue";
@@ -54,7 +55,7 @@ const router = createRouter({
     },
     {
       // 貸主首頁
-      path: '/add/d',
+      path: '/add/d/:Id',
       name: 'd',
       component: AddDView,
     },
@@ -98,6 +99,12 @@ const router = createRouter({
       path: '/graph/:Id',
       name: 'graph',
       component:F_AnsView_G
+    },
+    {
+      // 借主詳細頁面(含修改)
+      path: '/add/c/:PId/detail/:Id',
+      name: 'c_detail',
+      component:AddCDetailView
     }
   ]
 })
