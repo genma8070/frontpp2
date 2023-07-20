@@ -53,6 +53,7 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
+                    window.alert(data.message)
                     this.id = []
                     this.find();
 
@@ -70,9 +71,7 @@ export default {
             this.find()
             // 更新相應的內容
         },
-        viewStatistics() {
-            // 觸發查看統計的動作，你可以根據自己的需求進行處理
-        },
+ 
         find() {
             let body = {
                 "index": (this.currentPage - 1) * 10

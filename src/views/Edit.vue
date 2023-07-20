@@ -38,7 +38,7 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-
+                    window.alert(data.message)
 
                 })
                 .catch(function (error) {

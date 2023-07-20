@@ -73,6 +73,7 @@ export default {
         viewStatistics() {
             // 觸發查看統計的動作，你可以根據自己的需求進行處理
         },
+        
         find() {
             let body = {
                 "index": (this.currentPage - 1) * 10
@@ -131,6 +132,9 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
+                    if(data.message){
+                        window.alert(data.message)
+                    }
                     this.items = data
                 })
                 .catch(function (error) {
@@ -140,6 +144,11 @@ export default {
         },
         add() {
             this.$router.push("/add/a");
+        },
+        compare(){
+            if(this.endTime<this.startTime){
+                window.alert("結束時間不可")
+            }
         }
 
     },

@@ -15,8 +15,8 @@ export default {
         return {
             vh: 0,
             items:
-            JSON.parse(sessionStorage.getItem("a"))
-                
+                JSON.parse(sessionStorage.getItem("a"))
+
             ,
             items2: [
 
@@ -32,14 +32,14 @@ export default {
             questionSessionId: "",
             sessions: [],
             id: [],
-            qId:[]
+            qId: []
 
         }
     },
     methods: {
-       
+
         findqo() {
-         
+
             let body = {
                 "questionnaireId": this.$route.params.Id,
             }
@@ -56,7 +56,6 @@ export default {
                 })
                 .then((data) => {
                     this.items2 = data
-                    console.log(this.items2)
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -64,7 +63,6 @@ export default {
         },
         enter(value) {
             this.$emit('e-change', value);
-            console.log(value)
             this.title = value.questionText
             this.choice = value.questionType
             this.must = value.isRequired
@@ -77,10 +75,8 @@ export default {
             } else {
                 this.qId.push(value.questionId)
             }
-            console.log(this.id)
         },
         enterSession(value, value2) {
-            console.log(value2)
             this.$emit('f-change', value);
             this.title = value.questionText
             this.choice = value.questionType
@@ -96,7 +92,6 @@ export default {
             } else {
                 this.id.push(value2)
             }
-            console.log(this.id)
         },
         clear() {
             this.title = ""
@@ -136,7 +131,14 @@ export default {
 
         },
         session() {
-
+            if (this.title.length === 0) {
+                window.alert("請輸入問題內容")
+                return;
+            }
+            if (this.option.length === 0) {
+                window.alert("問題需要至少一個選項")
+                return;
+            }
             try {
                 this.listData = JSON.parse(sessionStorage.getItem("a"));
 
@@ -167,7 +169,6 @@ export default {
                 .then((data) => {
                     sessionStorage.setItem("a", JSON.stringify(data))
                     this.items = data
-                    console.log(this.items)
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -175,6 +176,10 @@ export default {
         },
         db() {
             let listData = JSON.parse(sessionStorage.getItem("a"));
+            if (listData === null || listData.length === 0) {
+                window.alert('請加入至少一個題目')
+                return
+            }
             let body = {
 
                 "list": listData,
@@ -196,6 +201,8 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
+
+                    window.alert("成功存進資料庫")
                     this.$router.push("/")
                     sessionStorage.removeItem("a")
                     data.questionSessionId = 1;
@@ -206,7 +213,7 @@ export default {
         },
         deleteQ() {
             let body = {
-                "questionId":  this.questionId,
+                "questionId": this.questionId,
             }
             fetch("http://localhost:8080/delete_qo", {
                 method: "POST",
@@ -235,7 +242,7 @@ export default {
             }
             let body = {
                 "list": this.listData,
-                "sessions":  this.id,
+                "sessions": this.id,
             }
             fetch("http://localhost:8080/delete_session", {
                 method: "POST",
@@ -248,25 +255,31 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-                    sessionStorage.setItem("a", JSON.stringify(data))
-                    this.items = data
-                    this.id = [];
-                    console.log(this.items)
-                    this.findqo();
+                    if (this.id.length === 0) {
+                        window.alert("未選擇刪除項目")
+                    }
+                    else {
+                        sessionStorage.setItem("a", JSON.stringify(data))
+                        this.items = data
+                        this.id = [];
+                        window.alert("刪除成功")
+                        this.clear();
+                        this.findqo();
+                    }
                 })
                 .catch(function (error) {
                     console.log(error)
                 })
         }
-    
 
-},
-mounted() {
-    this.vh = document.documentElement.scrollHeight - 72 - 85;
-    document.getElementById("wrap").style.height = this.vh.toString() + "px";
-    this.findqo();
 
-}
+    },
+    mounted() {
+        this.vh = document.documentElement.scrollHeight - 72 - 85;
+        document.getElementById("wrap").style.height = this.vh.toString() + "px";
+        this.findqo();
+
+    }
 }
 </script>
 <template>
@@ -316,7 +329,8 @@ mounted() {
                 <tbody>
                     <SessionEditView v-if="more" v-for="edit in items2.list" @e-change="enter" v-bind:key="edit"
                         v-bind:edit="edit" v-bind:cc="more" />
-                    <SessionView v-else v-for="(session, index) in items" @f-change="enterSession" v-bind:key="session" v-bind:session="session" v-bind:index="index" />
+                    <SessionView v-else v-for="(session, index) in items" @f-change="enterSession" v-bind:key="session"
+                        v-bind:session="session" v-bind:index="index" />
                 </tbody>
 
             </table>

@@ -26,7 +26,7 @@ export default {
         }
     },
     methods: {
-
+      
         getOP() {
             let body = {
                 "questionnaireId": this.$route.params.Id,
@@ -45,8 +45,6 @@ export default {
                 .then((data) => {
                     this.items = data
                     this.getEnq();
-                    console.log(this.items)
-
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -81,7 +79,7 @@ export default {
         goBack() {
             this.$router.push({ name: 'ans', params: { Id: this.$route.params.id } });
         },
-        changeGraph(){
+        changeGraph() {
             this.graph = !this.graph
         }
 
@@ -111,10 +109,10 @@ export default {
                 </div>
 
                 <ol class="my-3 list-group list-group-numbered ">
-                    <Bar v-if="graph" class="overflow-auto" v-for="(qList, index) in items.list" v-bind:key="qList" v-bind:qList="qList"
-                        v-bind:index="index" />
-                    <Pie v-else class="overflow-auto" v-for="(qList, index) in items.list" v-bind:key="index" v-bind:qList="qList"
-                        v-bind:index="index" />
+                    <Bar v-if="graph" class="overflow-auto" v-for="(qList, index) in items.list" v-bind:key="qList"
+                        v-bind:qList="qList" v-bind:index="index" />
+                    <Pie v-else class="overflow-auto" v-for="(qList, index) in items.list" v-bind:key="index"
+                        v-bind:qList="qList" v-bind:index="index" />
                 </ol>
 
 

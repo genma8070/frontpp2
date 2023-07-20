@@ -41,7 +41,7 @@ export default {
                 .then(function (response) {
                     return response.json();
                 })
-                .then((data) => {
+                .then((data) => {                  
                     data.b.forEach(str => {
                         const strArr = str.selectedOptions
                             .split(';');

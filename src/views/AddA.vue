@@ -36,8 +36,13 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-                   
-      this.jump(); 
+                    if (data.message) {
+                        window.alert(data.message);
+
+                    } else {
+                        window.alert("新增成功");
+                        this.jump();
+                    }
                 })
                 .catch(function (error) {
                     console.log(error)
@@ -56,10 +61,10 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-          
+
                     const questionnaireId = data.questionnaireId;
 
-       
+
                     this.$router.push({ name: 'b', params: { b_Id: questionnaireId } });
 
                 })
@@ -67,7 +72,7 @@ export default {
                     console.log(error)
                 })
         },
-        
+
     },
     mounted() {
         this.vh = document.documentElement.scrollHeight - 72 - 85;

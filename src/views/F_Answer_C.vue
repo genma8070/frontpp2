@@ -151,6 +151,7 @@ export default {
                 })
                 .then((data) => {
                     window.alert(data.message);
+                    this.$router.push('/f_home')
                 })
                 .catch(function (error) {
                     console.log(error)

@@ -4,10 +4,11 @@ export default {
     "property",
     "index"
   ],
-  emits: ['fChange'],
+  emits: ['f-change'],
   data() {
     return {
-
+      ed: 0,
+      nd: 0,
 
     };
   },
@@ -18,10 +19,42 @@ export default {
     sendData(value) {
       this.$emit('f-change', value);
     },
-    see(){
-      this.$router.push({ name: 'd', params: { Id: this.property.questionnaireId } });
+    see() {
+      let body = {
+        "questionnaireId": this.property.questionnaireId
+
+      }
+      fetch("http://localhost:8080/draw_g", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.message) {
+            window.alert(data.message)
+            this.$router.push({ name: 'home' });
+          }
+          else {
+            this.$router.push({ name: 'graph', params: { Id: this.property.questionnaireId } });
+          }
+
+
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+
     }
 
+  },
+  mounted(){
+    this.ed = new Date(this.property.endTime).getTime()
+    this.nd = Date.now()
   }
 };
 </script>
@@ -30,12 +63,16 @@ export default {
   <a href=""></a>
   <tr>
     <td v-if="property.status"></td>
-    <td v-else><input type="checkbox" @change="sendData(property,index)" :value="property.questionnaireId" /></td> <!-- 複選框列 -->
-    <td>{{ index+1 }}</td>
+    <td v-else><input type="checkbox" @change="sendData(property, index)" :value="property.questionnaireId" /></td>
+    <!-- 複選框列 -->
+    <td>{{ index + 1 }}</td>
     <td v-if="property.status">{{ property.title }}</td>
-    <td v-else><a :href="getEditUrl(property.questionnaireId)" class="aa">{{ property.title }}</a></td> <!-- 複選框列 -->
+    <td v-else-if="!property.status && this.ed > this.nd"><a
+        :href="getEditUrl(property.questionnaireId)" class="aa">{{ property.title }}</a></td> <!-- 複選框列 -->
+    <td v-else="!property.status">{{ property.title }}</td>
     <td v-if="property.status">開放中</td>
-    <td v-else>未開放</td>
+    <td v-else-if="!property.status && this.ed > this.nd">未開放</td>
+    <td v-else>已結束</td>
     <td>{{ property.startTime }}</td>
     <td>{{ property.endTime }}</td>
     <td>
