@@ -87,6 +87,11 @@ export default {
         }
     },
     mounted() {
+        if(sessionStorage.getItem("position")==2|| sessionStorage.getItem("position") == null){
+            window.alert("還想偷渡R")
+            sessionStorage.clear();
+            this.$router.push('/')
+        }
         this.find()
         // 設定高度
         this.vh = document.documentElement.scrollHeight - 72 - 85;

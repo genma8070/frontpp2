@@ -1,12 +1,14 @@
 <script>
 import Pagination from '../components/Pagination.vue';
 import Result from '../components/Result.vue';
+
 import EditView from "../views/Edit.vue";
 export default {
     components: {
         Pagination,
         Result,
-        EditView
+        EditView,
+       
     },
 
     data() {
@@ -37,6 +39,10 @@ export default {
             }
         },
         deleteEnquete() {
+            if (sessionStorage.getItem("position") == 1) {
+                window.alert("後台人員只能觀看後台數據")
+                return;
+            }
             // 在父组件中执行方法  
             let body = {
 
@@ -71,7 +77,7 @@ export default {
             this.find()
             // 更新相應的內容
         },
- 
+
         find() {
             let body = {
                 "index": (this.currentPage - 1) * 10
@@ -137,7 +143,7 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-                    if(data.message){
+                    if (data.message) {
                         window.alert(data.message)
                         this.find()
                     }
@@ -149,11 +155,24 @@ export default {
 
         },
         add() {
+            if (sessionStorage.getItem("position") == 1) {
+                window.alert("後台人員只能觀看後台數據")
+                return;
+            }
             this.$router.push("/add/a");
-        }
+        },
+        go() {
+            this.$router.push("/add/c");
+        },
 
     },
     mounted() {
+        if(sessionStorage.getItem("position")==2|| sessionStorage.getItem("position") == null){
+            window.alert("還想偷渡R")
+            sessionStorage.clear();
+            this.$router.push('/')
+        }
+
         this.find()
         // 設定高度
         this.vh = document.documentElement.scrollHeight - 72 - 85;
@@ -180,9 +199,15 @@ export default {
                 <button @click="search" type="button">查詢</button>
             </div>
         </div>
-        <div class="mt-2">
+      
+        <div class="d-flex justify-content-between">
+            <div class="mt-2">
             <button @click="deleteEnquete" class="ms-5" type="button">刪除</button>
             <button @click="add" class="ms-5" type="button">新增</button>
+        </div>
+            <div class="mt-2 me-5">
+                <button @click="go" class="ms-5" type="button">觀看回饋</button>
+            </div>
         </div>
         <div class="Result">
             <table class="table table-dark table-striped">

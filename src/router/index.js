@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
+import AdminView from "../views/Admin.vue";
+import LoginView from "../views/Login.vue";
 import HomeView from "../views/Home.vue";
 import F_HomeView from "../views/F_Home.vue";
 import F_AnsView from "../views/F_Answer.vue";
@@ -20,88 +21,80 @@ const router = createRouter({
     {
       // 首頁
       path: '/',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView
+    },
+    {
+      path: '/home',
       name: 'home',
       component: HomeView
     },
     {
-      // 物件詳細頁面(含修改)
       path: '/add/a',
       name: 'a',
       component: AddAView,
     },
     {
-      // 物件詳細頁面(含修改)
       path: '/edit/:Id',
       name: 'edit',
       component: EditView,
     },
     {
-      // 契約首頁
       path: '/add/b/:b_Id',
       name: 'b',
       component: AddBView,
     },
     {
-      // 契約首頁
       path: '/add/b',
       name: 'bb',
       component: AddBView,
     },
     {
-      // 契約詳細頁面(包含歷史契約)
       path: '/add/c',
       name: 'c',
       component: AddCView,
     },
     {
-      // 貸主首頁
       path: '/add/d/:Id',
       name: 'd',
       component: AddDView,
     },
     {
-      // 貸主詳細頁面(含修改)
       path: '/editB/:Id',
       name: 'editB',
       component: EditBView,
     },
     {
-      // 借主首頁
       path: '/f_home',
       name: 'f_home',
       component: F_HomeView,
-      // children: [
-      //   {
-      //     // 借主詳細頁面(含修改)
-      //     path: 'info',
-      //     // component:
-      //   }
-      // ]
+     
     },
     {
-      // 貸主首頁
       path: '/ans/:Id',
       name: 'ans',
       component: F_AnsView,
-    }, {
-      // 貸主首頁
+    }, 
+    {
       path: '/ans/:Id/check',
       name: 'check',
       component: F_AnsView_C,
     }, {
-      // 貸主首頁
       path: '/feedBack/:Id',
       name: 'feedBack',
       component: F_AnsView_F,
     },
     {
-      // 借主詳細頁面(含修改)
       path: '/graph/:Id',
       name: 'graph',
       component:F_AnsView_G
     },
     {
-      // 借主詳細頁面(含修改)
       path: '/add/c/:PId/detail/:Id',
       name: 'c_detail',
       component:AddCDetailView

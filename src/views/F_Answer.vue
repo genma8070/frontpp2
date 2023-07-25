@@ -22,7 +22,7 @@ export default {
             st: '',
             et: '',
             deBug: false,
-            db:[]
+            db: []
         }
     },
     methods: {
@@ -155,17 +155,20 @@ export default {
             }
         },
         goHome() {
-            sessionStorage.clear()
+            sessionStorage.removeItem('age')
+            sessionStorage.removeItem('name')
+            sessionStorage.removeItem('phone')
+            sessionStorage.removeItem('email')
             this.$router.push({ name: 'f_home' });
         },
-        goDb(){
-            for(let i=0;i<this.items.length;i++){
+        goDb() {
+            for (let i = 0; i < this.items.length; i++) {
                 sessionStorage.getItem(i).forEach(element => {
-                    if(element === []){
+                    if (element === []) {
                         element === "無";
                     }
-                   const e = element.join(',')
-                   this.db.add(e)
+                    const e = element.join(',')
+                    this.db.add(e)
                 });
                 this.db = this.db.join(';')
             }
@@ -174,6 +177,11 @@ export default {
 
     },
     mounted() {
+        if(sessionStorage.getItem("position")!=2|| sessionStorage.getItem("position") == null){
+            window.alert("還想偷渡R")
+            sessionStorage.clear();
+            this.$router.push('/')
+        }
 
         this.vh = document.documentElement.scrollHeight - 72 - 85;
         document.getElementById("wrap").style.height = this.vh.toString() + "px";
@@ -204,9 +212,9 @@ export default {
                 </div>
                 <div class="col d-flex">
                     <h4>EMail:</h4>
-                    <input v-if="phone===''" placeholder="請先輸入電話" v-model="email" style="height: 25px; width: 325px;" class="ms-2"
-                        type="email" @blur="validateEmailInput" disabled>
-                        <input v-else placeholder="請輸入email" v-model="email" style="height: 25px; width: 325px;" class="ms-2"
+                    <input v-if="phone === ''" placeholder="請先輸入電話" v-model="email" style="height: 25px; width: 325px;"
+                        class="ms-2" type="email" @blur="validateEmailInput" disabled>
+                    <input v-else placeholder="請輸入email" v-model="email" style="height: 25px; width: 325px;" class="ms-2"
                         type="email" @blur="validateEmailInput">
                 </div>
                 <div class="col d-flex">

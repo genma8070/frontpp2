@@ -88,6 +88,11 @@ export default {
     },
 
     mounted() {
+        if(sessionStorage.getItem("position")==2|| sessionStorage.getItem("position") == null){
+            window.alert("還想偷渡R")
+            sessionStorage.clear();
+            this.$router.push('/')
+        }
         this.vh = document.documentElement.scrollHeight - 72 - 85;
         document.getElementById("wrap").style.height = this.vh.toString() + "px";
 

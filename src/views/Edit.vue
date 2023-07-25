@@ -80,6 +80,15 @@ export default {
 
     },
     mounted() {
+        if (sessionStorage.getItem("position")==1) {
+            window.alert("後台人員只能觀看數據")
+            this.$router.push('/home')
+        }
+        if(sessionStorage.getItem("position")==2|| sessionStorage.getItem("position") == null){
+            window.alert("還想偷渡R")
+            sessionStorage.clear();
+            this.$router.push('/')
+        }
         this.get(); 
         this.vh = document.documentElement.scrollHeight - 72 - 85;
         document.getElementById("wrap").style.height = this.vh.toString() + "px";

@@ -18,7 +18,8 @@ export default {
             email: "",
             title: "",
             description: "",
-            db: []
+            db: [],
+            p:""
         }
     },
     methods: {
@@ -151,6 +152,9 @@ export default {
                 })
                 .then((data) => {
                     window.alert(data.message);
+                    this.p = sessionStorage.getItem('position')
+                    sessionStorage.clear();
+                    sessionStorage.setItem('position', this.p)
                     this.$router.push('/f_home')
                 })
                 .catch(function (error) {
@@ -161,6 +165,11 @@ export default {
 
     },
     mounted() {
+        if(sessionStorage.getItem("position")!=2|| sessionStorage.getItem("position") == null){
+            window.alert("還想偷渡R")
+            sessionStorage.clear();
+            this.$router.push('/')
+        }
 
         this.vh = document.documentElement.scrollHeight - 72 - 85;
         document.getElementById("wrap").style.height = this.vh.toString() + "px";

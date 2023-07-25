@@ -1,6 +1,6 @@
 <script>
 import Pagination from '../components/Pagination.vue';
-import Result from '../components/Result_Front.vue';
+import Result from '../components/MenberList.vue';
 import EditView from "../views/Edit.vue";
 export default {
     components: {
@@ -22,47 +22,13 @@ export default {
 
             ],
             title: "",
-            startTime: "",
-            endTime: ""
+            position: "",
+            password: ""
+
 
         }
     },
     methods: {
-        getId(value) {
-            const index = this.id.findIndex(i => i === value.questionnaireId);
-            if (index !== -1) {
-                this.id.splice(index, 1); // 从数组中删除找到的元素
-            } else {
-                this.id.push(value.questionnaireId)
-            }
-        },
-        deleteEnquete() {
-            // 在父组件中执行方法  
-            let body = {
-
-                "id": this.id
-            }
-            fetch("http://localhost:8080/delete_enquete", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body)
-            })
-                .then(function (response) {
-                    return response.json();
-                })
-                .then((data) => {
-                    this.id = []
-                    this.find();
-
-                })
-                .catch(function (error) {
-                    console.log(error)
-                })
-
-
-        },
         handlePageChanged(page) {
             // 處理分頁切換的邏輯
 
@@ -70,16 +36,12 @@ export default {
             this.find()
             // 更新相應的內容
         },
-        viewStatistics() {
-            // 觸發查看統計的動作，你可以根據自己的需求進行處理
-        },
-        
         find() {
             let body = {
                 "index": (this.currentPage - 1) * 10
             }
 
-            fetch("http://localhost:8080/find_all", {
+            fetch("http://localhost:8080/find_all_user", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -92,7 +54,7 @@ export default {
                 .then((data) => {
 
                     this.contentCount = data.list.length
-                    fetch("http://localhost:8080/find_all_enquete", {
+                    fetch("http://localhost:8080/find_pag_user", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -114,14 +76,21 @@ export default {
                     console.log(error)
                 })
         },
-        search() {
+        getInfo(value) {
+            this.title = value.account
+            this.password = value.password
+            this.position = value.position
+            console.log(value)
+        },
+        edit() {
             let body = {
-                "title": this.title,
-                "startTime": this.startTime,
-                "endTime": this.endTime,
-                "index": this.currentPage - 1
+                "account": this.title,
+                "password": this.password,
+                "position": this.position
             }
-            fetch("http://localhost:8080/find_questionnaire_by_title_or_date", {
+            console.log(this.position)
+
+            fetch("http://localhost:8080/change_position", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -132,33 +101,31 @@ export default {
                     return response.json();
                 })
                 .then((data) => {
-                    if(data.message){
+                    const userConfirmed = window.confirm("您確定要變動該名會員的權限嗎?");
+
+                    if (userConfirmed) {
                         window.alert(data.message)
+                        this.find()
+                    } else {
+                        return;
                     }
-                    this.items = data
+
                 })
                 .catch(function (error) {
                     console.log(error)
                 })
 
+
         },
-        add() {
-            this.$router.push("/add/a");
-        },
-        compare(){
-            if(this.endTime<this.startTime){
-                window.alert("結束時間不可")
-            }
-        }
+
 
     },
     mounted() {
-        if(sessionStorage.getItem("position")!=2|| sessionStorage.getItem("position") == null){
+        if (sessionStorage.getItem("position") != 0 || sessionStorage.getItem("position") == null) {
             window.alert("還想偷渡R")
             sessionStorage.clear();
             this.$router.push('/')
         }
-
         this.find()
         // 設定高度
         this.vh = document.documentElement.scrollHeight - 72 - 85;
@@ -172,39 +139,37 @@ export default {
         <div class="d-flex mt-1 mx-5 border border-dark border-2 justify-content-center">
             <div class="row d-flex flex-column mx-3 my-2">
                 <div class="col d-flex">
-                    <h4>問卷標題:</h4>
-                    <input v-model="title" style="height: 25px; width: 338px;" class="ms-2" type="text">
+                    <h4>帳號:</h4>
+                    <input v-model="title" style="height: 25px; width: 338px;" class="ms-2" type="text" disabled>
                 </div>
                 <div class="col d-flex">
-                    <h4>開始/截止日期:</h4>
-                    <input v-model="startTime" style="height: 25px;" class="ms-2" type="date" name="" id="">
-                    <input v-model="endTime" style="height: 25px;" class="ms-2" type="date" name="" id="">
+                    <h4>權限:</h4>
+                    <select class="ms-2" v-model="position" style="height: 25px; width: 338px;" name="position"
+                        id="position">
+                        <option value="1">後台人員</option>
+                        <option value="2">使用者</option>
+                    </select>
+
                 </div>
             </div>
             <div class="mt-5">
-                <button @click="search" type="button">查詢</button>
+                <button @click="edit" type="button">更新</button>
             </div>
         </div>
-        <!-- <div class="mt-2">
-            <button @click="deleteEnquete" class="ms-5" type="button">刪除</button>
-            <button @click="add" class="ms-5" type="button">新增</button>
-        </div> -->
+
         <div class="Result">
             <table class="table table-dark table-striped">
                 <thead>
                     <tr>
-                        <th>編號</th>
-                        <th>問卷</th>
-                        <th>狀態</th>
-                        <th>開始時間</th>
-                        <th>結束時間</th>
-                        <th>觀看統計</th>
+                        <th>選取</th> <!-- 空白列 -->
+                        <th>帳號</th>
+                        <th>權限</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <!-- 使用子元件並傳遞相關資料 -->
-                    <Result v-for="(property, index) in items.list" @f-change="getId" v-bind:key="property"
+                    <Result v-for="(property, index) in items.list" @f-change="getInfo" v-bind:key="property"
                         v-bind:property="property" v-bind:index="index" />
                 </tbody>
 
